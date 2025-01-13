@@ -3,20 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard SupAdm</title>
+    <title>Dashboard Super Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-4">
-        <h3>Selamat datang, <span id="userName"></span></h3>
-        <p>Peran: <span id="userRole"></span></p>
-        <div class="mt-4">
-            <h5>Menu:</h5>
-            <ul>
-                <li><a href="#">Manajemen User</a></li>
-                <li><a href="#">Laporan</a></li>
-                <li><a href="#" id="logout">Logout</a></li>
-            </ul>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Super Admin</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="#userManagement">Manajemen User</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#customers">Pelanggan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#suppliers">Supplier</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#categories">Kategori</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#items">Item</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#products">Produk</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#transactions">Transaksi</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#reports">Laporan</a></li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#" id="logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <h3>Selamat datang, <span id="userName"></span></h3>
+            <p>Peran: <span id="userRole"></span></p>
+
+            <!-- Section: User Management -->
+            <div id="userManagement">
+                <h4>Manajemen User</h4>
+                <button class="btn btn-primary mb-3" onclick="openUserForm()">Tambah User</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Peran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Section: Pelanggan -->
+            <div id="customers">
+                <h4>Manajemen Pelanggan</h4>
+                <button class="btn btn-primary mb-3" onclick="openCustomerForm()">Tambah Pelanggan</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>No. Telepon</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Section: Supplier -->
+            <div id="suppliers">
+                <h4>Manajemen Supplier</h4>
+                <button class="btn btn-primary mb-3" onclick="openSupplierForm()">Tambah Supplier</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Kontak</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supplierTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Repeat similar sections for Categories, Items, Products, Transactions, and Reports -->
+
         </div>
     </div>
 
