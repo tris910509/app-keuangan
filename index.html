@@ -1,106 +1,19 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Dashboard</title>
-    <!-- Menambahkan Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Manajemen User</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+    <div id="app"></div>
 
-<!-- Halaman Login -->
-<div id="loginPage" class="container mt-5">
-    <h2 class="text-center">Login</h2>
-    <form id="loginForm">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" required>
-        </div>
-        <div class="mb-3">
-            <label for="role" class="form-label">Peran</label>
-            <select class="form-select" id="role" required>
-                <option value="Admin">Admin</option>
-                <option value="Kasir">Kasir</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-</div>
-
-<!-- Dashboard -->
-<div id="dashboardPage" class="container mt-5" style="display: none;">
-    <h2 class="text-center">Dashboard</h2>
-    <div class="d-flex justify-content-between mb-4">
-        <button class="btn btn-secondary" id="btnUser" style="display: none;" onclick="showPage('userPage')">User</button>
-        <button class="btn btn-secondary" id="btnPelanggan" style="display: none;" onclick="showPage('pelangganPage')">Pelanggan</button>
-        <button class="btn btn-secondary" id="btnSupplier" style="display: none;" onclick="showPage('supplierPage')">Supplier</button>
-        <button class="btn btn-secondary" id="btnKategori" style="display: none;" onclick="showPage('kategoriPage')">Kategori</button>
-        <button class="btn btn-secondary" id="btnItem" style="display: none;" onclick="showPage('itemPage')">Item</button>
-        <button class="btn btn-secondary" id="btnProduk" style="display: none;" onclick="showPage('produkPage')">Produk</button>
-        <button class="btn btn-secondary" id="btnTransaksi" onclick="showPage('transaksiPage')">Transaksi</button>
-        <button class="btn btn-secondary" id="btnLaporan" onclick="showPage('laporanPage')">Laporan</button>
-        <button class="btn btn-danger" onclick="logout()">Logout</button>
-    </div>
-
-    <!-- Dynamic Pages -->
-    <div id="userPage" class="page" style="display: none;">
-        <h3>User</h3>
-        <button class="btn btn-primary" onclick="addData('user')">Add User</button>
-        <table class="table table-striped mt-3" id="userTable"></table>
-    </div>
-    
-    <div id="pelangganPage" class="page" style="display: none;">
-        <h3>Pelanggan</h3>
-        <button class="btn btn-primary" onclick="addData('pelanggan')">Add Pelanggan</button>
-        <table class="table table-striped mt-3" id="pelangganTable"></table>
-    </div>
-
-    <div id="supplierPage" class="page" style="display: none;">
-        <h3>Supplier</h3>
-        <button class="btn btn-primary" onclick="addData('supplier')">Add Supplier</button>
-        <table class="table table-striped mt-3" id="supplierTable"></table>
-    </div>
-
-    <div id="kategoriPage" class="page" style="display: none;">
-        <h3>Kategori</h3>
-        <button class="btn btn-primary" onclick="addData('kategori')">Add Kategori</button>
-        <table class="table table-striped mt-3" id="kategoriTable"></table>
-    </div>
-
-    <div id="itemPage" class="page" style="display: none;">
-        <h3>Item</h3>
-        <button class="btn btn-primary" onclick="addData('item')">Add Item</button>
-        <table class="table table-striped mt-3" id="itemTable"></table>
-    </div>
-
-    <div id="produkPage" class="page" style="display: none;">
-        <h3>Produk</h3>
-        <button class="btn btn-primary" onclick="addData('produk')">Add Produk</button>
-        <table class="table table-striped mt-3" id="produkTable"></table>
-    </div>
-
-    <div id="transaksiPage" class="page" style="display: none;">
-        <h3>Transaksi</h3>
-        <button class="btn btn-primary" onclick="addData('transaksi')">Add Transaksi</button>
-        <table class="table table-striped mt-3" id="transaksiTable"></table>
-    </div>
-
-    <div id="laporanPage" class="page" style="display: none;">
-        <h3>Laporan</h3>
-        <button class="btn btn-primary" onclick="generateReport()">Generate Laporan</button>
-        <table class="table table-striped mt-3" id="laporanTable"></table>
-    </div>
-</div>
-
-<!-- Menambahkan Bootstrap JS dan jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/script.js"></script>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="library/md5.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
