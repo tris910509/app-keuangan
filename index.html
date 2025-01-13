@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen User</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Manajemen User</h2>
+
+    <!-- Form Tambah/Edit User -->
+    <form id="userForm">
+        <div class="mb-3">
+            <label for="userName" class="form-label">Nama User</label>
+            <input type="text" class="form-control" id="userName" placeholder="Masukkan nama user" required>
+        </div>
+        <div class="mb-3">
+            <label for="userRole" class="form-label">Peran</label>
+            <select class="form-select" id="userRole" onchange="handleRoleChange()" required>
+                <option value="Admin">Admin</option>
+                <option value="Kasir">Kasir</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="mb-3" id="customRoleField" style="display: none;">
+            <label for="customRole" class="form-label">Peran Manual</label>
+            <input type="text" class="form-control" id="customRole" placeholder="Masukkan peran manual">
+        </div>
+        <div class="mb-3">
+            <label for="userPhone" class="form-label">No Handphone</label>
+            <input type="text" class="form-control" id="userPhone" placeholder="Masukkan no handphone" required>
+        </div>
+        <div class="mb-3">
+            <label for="userEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="Masukkan email" required>
+        </div>
+        <div class="mb-3">
+            <label for="userAddress" class="form-label">Alamat</label>
+            <textarea class="form-control" id="userAddress" placeholder="Masukkan alamat" required></textarea>
+        </div>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="userStatus">
+            <label class="form-check-label" for="userStatus">Aktif</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Simpan</button>
+    </form>
+
+    <!-- Daftar User -->
+    <h3 class="mt-5">Daftar User</h3>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Peran</th>
+            <th>No Handphone</th>
+            <th>Email</th>
+            <th>Alamat</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody id="userTable">
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/user.js"></script>
+</body>
+</html>
