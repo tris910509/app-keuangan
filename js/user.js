@@ -1,6 +1,7 @@
+// Data users disimpan di LocalStorage
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
-// Menampilkan daftar user ke tabel
+// Fungsi untuk menampilkan daftar user di tabel
 function renderUserTable() {
     const userTable = document.getElementById("userTable");
     userTable.innerHTML = users
@@ -27,7 +28,7 @@ function renderUserTable() {
         .join("");
 }
 
-// Tambah/Edit User
+// Tambah atau Edit User
 document.getElementById("userForm").addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -59,7 +60,10 @@ document.getElementById("userForm").addEventListener("submit", (e) => {
         users.push(user);
     }
 
+    // Simpan ke LocalStorage
     localStorage.setItem("users", JSON.stringify(users));
+
+    // Reset form dan refresh tabel
     document.getElementById("userForm").reset();
     document.getElementById("manualRole").style.display = "none";
     renderUserTable();
@@ -93,7 +97,7 @@ function deleteUser(index) {
     }
 }
 
-// Tampilkan input manual untuk role Other
+// Tampilkan input manual untuk peran Other
 document.getElementById("userRole").addEventListener("change", (e) => {
     const manualRoleInput = document.getElementById("manualRole");
     manualRoleInput.style.display = e.target.value === "Other" ? "block" : "none";
