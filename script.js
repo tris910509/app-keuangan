@@ -1,6 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
     const app = document.getElementById("app");
     const users = JSON.parse(localStorage.getItem("users")) || [];
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    function renderNavbar() {
+        let navbarHTML = `
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Manajemen User</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+        `;
+
+        // Navbar menu berdasarkan peran
+        if (currentUser && currentUser.role === 'SupAdm') {
+            navbarHTML += `
+                <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Manajemen User</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Laporan</a></li>
+            `;
+        } else if (currentUser && currentUser.role === 'Kasir') {
+            navbarHTML += `
+                <li class="nav-item"><a class="nav-link" href="#">Transaksi</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Laporan</a></li>
+            `;
+        } else if (currentUser && currentUser.role === 'Other') {
+            navbarHTML += `
+                <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+            `;
+        }
+
+        navbarHTML += `
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">${currentUser ? `Hello, ${currentUser.name}` : 'Login'}</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        `;
+
+        document.body.insertAdjacentHTML('afterbegin', navbarHTML);
+
+        // Logout button
+        if (currentUser) {
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                localStorage.removeItem('currentUser');
+                window.location.reload();
+            });
+        }
+    }
 
     function renderUserPage() {
         app.innerHTML = `
@@ -52,48 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             .join("")}
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Modal Tambah/Edit User -->
-            <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addUserModalLabel">Tambah User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="userForm">
-                                <input type="hidden" id="userId">
-                                <div class="mb-3">
-                                    <label for="userName" class="form-label">Nama User</label>
-                                    <input type="text" class="form-control" id="userName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userRole" class="form-label">Peran</label>
-                                    <select class="form-select" id="userRole" required>
-                                        <option value="SupAdm">SupAdm</option>
-                                        <option value="Kasir">Kasir</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="userEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="userPassword" required>
-                                </div>
-                                <div class="mb-3" id="manualData" style="display: none;">
-                                    <label for="otherData" class="form-label">Data Tambahan</label>
-                                    <textarea class="form-control" id="otherData" placeholder="Masukkan data tambahan..."></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">Simpan</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         `;
 
@@ -169,5 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("users", JSON.stringify(users));
     }
 
+    // Render navbar and user page
+    renderNavbar();
     renderUserPage();
 });
