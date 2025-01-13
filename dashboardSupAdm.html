@@ -91,7 +91,64 @@
             </div>
 
             <!-- Repeat similar sections for Categories, Items, Products, Transactions, and Reports -->
+<div class="container mt-4">
+    <h3>Dashboard Super Admin</h3>
+    <div class="row my-4">
+        <!-- Tombol Fitur -->
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-primary w-100" onclick="navigateTo('userManagement')">
+                <i class="bi bi-person-circle"></i> User
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-success w-100" onclick="navigateTo('customerManagement')">
+                <i class="bi bi-people-fill"></i> Pelanggan
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-warning w-100" onclick="navigateTo('supplierManagement')">
+                <i class="bi bi-truck"></i> Supplier
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-info w-100" onclick="navigateTo('categoryManagement')">
+                <i class="bi bi-tags"></i> Kategori
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-secondary w-100" onclick="navigateTo('itemManagement')">
+                <i class="bi bi-box"></i> Item
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-dark w-100" onclick="navigateTo('productManagement')">
+                <i class="bi bi-box-seam"></i> Produk
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-danger w-100" onclick="navigateTo('transactionManagement')">
+                <i class="bi bi-cash"></i> Transaksi
+            </button>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn btn-primary w-100" onclick="navigateTo('reportManagement')">
+                <i class="bi bi-graph-up"></i> Laporan
+            </button>
+        </div>
+    </div>
 
+    <!-- Chart Section -->
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Statistik</h4>
+            <canvas id="dashboardChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+
+
+            
         </div>
     </div>
 
