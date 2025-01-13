@@ -63,7 +63,7 @@ document.getElementById("userForm").addEventListener("submit", (e) => {
     }
 
     // Simpan ke LocalStorage
-    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("user", JSON.stringify(user));
 
     // Reset form dan refresh tabel
     document.getElementById("userForm").reset();
@@ -94,7 +94,7 @@ function editUser(index) {
 function deleteUser(index) {
     if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
         users.splice(index, 1);
-        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("user", JSON.stringify(user));
         renderUserTable();
     }
 }
