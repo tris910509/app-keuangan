@@ -4,9 +4,10 @@ let users = JSON.parse(localStorage.getItem("users")) || [];
 // Fungsi untuk menampilkan daftar user di tabel
 function renderUserTable() {
     const userTable = document.getElementById("userTable");
-    userTable.innerHTML = users
-        .map(
-            (user, index) => `
+    userTable.innerHTML = users.length
+        ? users
+              .map(
+                  (user, index) => `
         <tr>
             <td>${user.id}</td>
             <td>${user.name}</td>
@@ -24,8 +25,9 @@ function renderUserTable() {
                 </button>
             </td>
         </tr>`
-        )
-        .join("");
+              )
+              .join("")
+        : `<tr><td colspan="8" class="text-center">Belum ada data user</td></tr>`;
 }
 
 // Tambah atau Edit User
