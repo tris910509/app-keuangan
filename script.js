@@ -1,14 +1,50 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
+    const customers = JSON.parse(localStorage.getItem("customers")) || [];
+    const suppliers = JSON.parse(localStorage.getItem("suppliers")) || [];
+    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-    // Login
+    // Helper Functions
+    const generateId = () => Date.now().toString();
+    const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+
+    // Redirect if not logged in
+    if (!currentUser && !["index.html", "register.html"].includes(location.pathname.split("/").pop())) {
+        alert("Silakan login terlebih dahulu!");
+        window.location.href = "index.html";
+    }
+
+    // Render Current User Info
+    if (currentUser) {
+        const userNameElem = document.getElementById("userName");
+        const userRoleElem = document.getElementById("userRole");
+        if (userNameElem && userRoleElem) {
+            userNameElem.textContent = currentUser.name;
+            userRoleElem.textContent = currentUser.role;
+        }
+    }
+
+    // Logout Functionality
+    const logoutBtn = document.getElementById("logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("currentUser");
+            window.location.href = "index.html";
+        });
+    }
+
+    // Login Functionality
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        loginForm.addEventListener("submit", function (e) {
+        loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-            const user = users.find(u => u.email === email && u.password === CryptoJS.MD5(password).toString());
+
+            const user = users.find(
+                (u) => u.email === email && u.password === CryptoJS.MD5(password).toString()
+            );
 
             if (user) {
                 localStorage.setItem("currentUser", JSON.stringify(user));
@@ -19,29 +55,35 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Registrasi
+    // Registration Functionality
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {
-        registerForm.addEventListener("submit", function (e) {
+        registerForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
             const password = CryptoJS.MD5(document.getElementById("password").value).toString();
             const role = document.getElementById("role").value;
 
-            if (users.some(u => u.email === email)) {
+            if (users.some((u) => u.email === email)) {
                 alert("Email sudah terdaftar!");
             } else {
-                const newUser = { id: Date.now(), name, email, password, role };
+                const newUser = {
+                    id: generateId(),
+                    name,
+                    email,
+                    password,
+                    role,
+                };
                 users.push(newUser);
-                localStorage.setItem("users", JSON.stringify(users));
+                saveData("users", users);
                 alert("Registrasi berhasil!");
                 window.location.href = "index.html";
             }
         });
     }
 
-    // Redirect berdasarkan role
+    // Redirect Based on Role
     function redirectToDashboard(role) {
         if (role === "SupAdm") {
             window.location.href = "dashboardSupAdm.html";
@@ -52,14 +94,155 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Logout
-    const logoutButton = document.getElementById("logout");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", function () {
-            localStorage.removeItem("currentUser");
-            window.location.href = "index.html";
+    // CRUD for Users (Super Admin Only)
+    const userTable = document.getElementById("userTable");
+    if (userTable && currentUser.role === "SupAdm") {
+        renderUsers();
+
+        document.getElementById("addUserForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("addUserName").value;
+            const email = document.getElementById("addUserEmail").value;
+            const password = CryptoJS.MD5(document.getElementById("addUserPassword").value).toString();
+            const role = document.getElementById("addUserRole").value;
+
+            const newUser = {
+                id: generateId(),
+                name,
+                email,
+                password,
+                role,
+            };
+
+            users.push(newUser);
+            saveData("users", users);
+            renderUsers();
+            alert("User berhasil ditambahkan!");
+            e.target.reset();
         });
     }
+
+    function renderUsers() {
+        userTable.innerHTML = "";
+        users.forEach((user) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.role}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editUser('${user.id}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">Hapus</button>
+                </td>
+            `;
+            userTable.appendChild(row);
+        });
+    }
+
+    window.editUser = (id) => {
+        const user = users.find((u) => u.id === id);
+        if (user) {
+            const newName = prompt("Nama Baru:", user.name);
+            const newEmail = prompt("Email Baru:", user.email);
+            const newRole = prompt("Peran Baru (SupAdm/Kasir/Other):", user.role);
+
+            if (newName && newEmail && newRole) {
+                user.name = newName;
+                user.email = newEmail;
+                user.role = newRole;
+                saveData("users", users);
+                renderUsers();
+                alert("User berhasil diubah!");
+            }
+        }
+    };
+
+    window.deleteUser = (id) => {
+        if (confirm("Yakin ingin menghapus user ini?")) {
+            const index = users.findIndex((u) => u.id === id);
+            if (index > -1) {
+                users.splice(index, 1);
+                saveData("users", users);
+                renderUsers();
+                alert("User berhasil dihapus!");
+            }
+        }
+    };
+
+    // Repeat similar CRUD functionality for Customers, Suppliers, Transactions, etc.
+
+    // Example: CRUD for Customers
+    const customerTable = document.getElementById("customerTable");
+    if (customerTable && currentUser.role === "SupAdm") {
+        renderCustomers();
+
+        document.getElementById("addCustomerForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("addCustomerName").value;
+            const email = document.getElementById("addCustomerEmail").value;
+            const phone = document.getElementById("addCustomerPhone").value;
+
+            const newCustomer = {
+                id: generateId(),
+                name,
+                email,
+                phone,
+            };
+
+            customers.push(newCustomer);
+            saveData("customers", customers);
+            renderCustomers();
+            alert("Pelanggan berhasil ditambahkan!");
+            e.target.reset();
+        });
+    }
+
+    function renderCustomers() {
+        customerTable.innerHTML = "";
+        customers.forEach((customer) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editCustomer('${customer.id}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${customer.id}')">Hapus</button>
+                </td>
+            `;
+            customerTable.appendChild(row);
+        });
+    }
+
+    window.editCustomer = (id) => {
+        const customer = customers.find((c) => c.id === id);
+        if (customer) {
+            const newName = prompt("Nama Baru:", customer.name);
+            const newEmail = prompt("Email Baru:", customer.email);
+            const newPhone = prompt("No. Telepon Baru:", customer.phone);
+
+            if (newName && newEmail && newPhone) {
+                customer.name = newName;
+                customer.email = newEmail;
+                customer.phone = newPhone;
+                saveData("customers", customers);
+                renderCustomers();
+                alert("Pelanggan berhasil diubah!");
+            }
+        }
+    };
+
+    window.deleteCustomer = (id) => {
+        if (confirm("Yakin ingin menghapus pelanggan ini?")) {
+            const index = customers.findIndex((c) => c.id === id);
+            if (index > -1) {
+                customers.splice(index, 1);
+                saveData("customers", customers);
+                renderCustomers();
+                alert("Pelanggan berhasil dihapus!");
+            }
+        }
+    };
 });
-
-
