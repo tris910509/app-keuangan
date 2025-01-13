@@ -1,84 +1,66 @@
-// Data Peran dan Menu
-const roles = {
-    Admin: ["User", "Pelanggan", "Supplier", "Kategori", "Item", "Produk", "Transaksi", "Laporan"],
-    Kasir: ["Transaksi", "Laporan"],
-    Other: [] // Diatur oleh admin melalui modul User
+// Simulasi login
+let currentUser = JSON.parse(localStorage.getItem("currentUser")) || {
+    role: "Admin",
 };
 
-// Daftar menu dengan ikon Font Awesome
-const roles = {
+const allowedModules = {
     Admin: [
-        { name: "Pelanggan", icon: "fa-users" },
-        { name: "Supplier", icon: "fa-truck" },
-        { name: "Kategori", icon: "fa-list" },
-        { name: "Item", icon: "fa-box" },
-        { name: "Produk", icon: "fa-tags" },
-        { name: "Transaksi", icon: "fa-money-bill-wave" },
-        { name: "Laporan", icon: "fa-chart-line" }
+        "user",
+        "pelanggan",
+        "supplier",
+        "kategori",
+        "item",
+        "produk",
+        "transaksi",
+        "laporan",
     ],
-    Kasir: [
-        { name: "Transaksi", icon: "fa-money-bill-wave" },
-        { name: "Laporan", icon: "fa-chart-line" }
-    ],
-    Other: [] // Diatur oleh Admin
+    Kasir: ["transaksi", "laporan"],
+    Other: [],
 };
 
-// Fungsi untuk membuat menu dengan ikon
-function createMenu(role) {
-    const menuItems = roles[role];
-    const menuList = document.getElementById("menuItems");
-    menuList.innerHTML = "";
-
-    menuItems.forEach((menu) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("nav-item");
-
-        listItem.innerHTML = `
-            <a class="nav-link d-flex align-items-center" href="#" onclick="loadContent('${menu.name}')">
-                <i class="fa ${menu.icon} me-2"></i> <span>${menu.name}</span>
-            </a>
-        `;
-
-        menuList.appendChild(listItem);
+// Mengatur menu berdasarkan peran
+function updateMenu() {
+    document.querySelectorAll(".menu-item").forEach((menu) => {
+        const module = menu.id.replace("menu-", "");
+        if (allowedModules[currentUser.role].includes(module)) {
+            menu.style.display = "block";
+        } else {
+            menu.style.display = "none";
+        }
     });
 }
 
+// Muat konten modul
+function loadModule(moduleName) {
+    fetch(`modules/${moduleName}.html`)
+        .then((response) => response.text())
+        .then((html) => {
+            document.getElementById("main-content").innerHTML = html;
+            const script = document.createElement("script");
+            script.src = `js/${moduleName}.js`;
+            document.body.appendChild(script);
+        })
+        .catch((error) => console.error("Error loading module:", error));
+}
 
-// Simulasi Role User Aktif
-const currentUserRole = localStorage.getItem("userRole") || "Admin"; // Ganti sesuai login
-localStorage.setItem("userRole", currentUserRole); // Simpan peran aktif
+// Logout
+document.getElementById("logout").addEventListener("click", () => {
+    alert("Logout berhasil.");
+    localStorage.removeItem("currentUser");
+    window.location.reload();
+});
 
-// Fungsi untuk membuat menu sidebar
-function createMenu(role) {
-    const menuItems = roles[role];
-    const menuList = document.getElementById("menuItems");
-    menuList.innerHTML = "";
-
-    menuItems.forEach((menu) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("nav-item");
-
-        listItem.innerHTML = `
-            <a class="nav-link" href="#" onclick="loadContent('${menu}')">
-                ${menu}
-            </a>
-        `;
-
-        menuList.appendChild(listItem);
+// Event listener untuk menu
+document.querySelectorAll(".menu-item").forEach((menu) => {
+    menu.addEventListener("click", (e) => {
+        e.preventDefault();
+        const module = menu.id.replace("menu-", "");
+        loadModule(module);
     });
-}
+});
 
-// Fungsi untuk memuat konten dinamis
-function loadContent(menu) {
-    const contentDiv = document.getElementById("content");
-    contentDiv.innerHTML = `<h2 class="text-center mt-5">${menu}</h2><p class="text-center">Konten untuk ${menu} akan ditampilkan di sini.</p>`;
-
-    // Tambahkan logika tambahan untuk memuat file modul spesifik jika diperlukan
-    // Misalnya, untuk Pelanggan, kita bisa memuat pelanggan.html
-}
-
-// Saat halaman dimuat
+// Inisialisasi
 document.addEventListener("DOMContentLoaded", () => {
-    createMenu(currentUserRole);
-    loadContent("Dashboard"); // Default konten awal
+    updateMenu();
+    loadModule("user"); // Default load
 });
