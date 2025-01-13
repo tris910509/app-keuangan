@@ -47,11 +47,12 @@ function showPage(pageId) {
         document.getElementById('btnKategori').style.display = 'inline-block';
         document.getElementById('btnItem').style.display = 'inline-block';
         document.getElementById('btnProduk').style.display = 'inline-block';
+        document.getElementById('btnTransaksi').style.display = 'inline-block';
+        document.getElementById('btnLaporan').style.display = 'inline-block';
     } else if (role === 'Kasir') {
         document.getElementById('btnTransaksi').style.display = 'inline-block';
         document.getElementById('btnLaporan').style.display = 'inline-block';
     } else if (role === 'Other') {
-        // Admin bisa mengatur fitur yang tersedia untuk peran "Other"
         alert('Peran Other disesuaikan oleh Admin.');
     }
 }
