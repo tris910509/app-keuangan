@@ -1,5 +1,5 @@
 // Data users disimpan di LocalStorage
-let users = JSON.parse(localStorage.getItem("users")) || [];
+let user = JSON.parse(localStorage.getItem("user")) || [];
 
 // Fungsi untuk menampilkan daftar user di tabel
 function renderUserTable() {
@@ -30,7 +30,7 @@ function renderUserTable() {
         : `<tr><td colspan="8" class="text-center">Belum ada data user</td></tr>`;
 }
 
-// Tambah atau Edit User
+// Fungsi menambah atau mengedit user
 document.getElementById("userForm").addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -71,7 +71,7 @@ document.getElementById("userForm").addEventListener("submit", (e) => {
     renderUserTable();
 });
 
-// Edit User
+// Fungsi untuk mengedit user
 function editUser(index) {
     const user = users[index];
     document.getElementById("userId").value = user.id;
@@ -90,7 +90,7 @@ function editUser(index) {
     }
 }
 
-// Hapus User
+// Fungsi untuk menghapus user
 function deleteUser(index) {
     if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
         users.splice(index, 1);
@@ -105,5 +105,5 @@ document.getElementById("userRole").addEventListener("change", (e) => {
     manualRoleInput.style.display = e.target.value === "Other" ? "block" : "none";
 });
 
-// Inisialisasi
+// Inisialisasi data saat halaman dimuat
 document.addEventListener("DOMContentLoaded", renderUserTable);
