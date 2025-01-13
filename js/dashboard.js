@@ -5,6 +5,45 @@ const roles = {
     Other: [] // Diatur oleh admin melalui modul User
 };
 
+// Daftar menu dengan ikon Font Awesome
+const roles = {
+    Admin: [
+        { name: "Pelanggan", icon: "fa-users" },
+        { name: "Supplier", icon: "fa-truck" },
+        { name: "Kategori", icon: "fa-list" },
+        { name: "Item", icon: "fa-box" },
+        { name: "Produk", icon: "fa-tags" },
+        { name: "Transaksi", icon: "fa-money-bill-wave" },
+        { name: "Laporan", icon: "fa-chart-line" }
+    ],
+    Kasir: [
+        { name: "Transaksi", icon: "fa-money-bill-wave" },
+        { name: "Laporan", icon: "fa-chart-line" }
+    ],
+    Other: [] // Diatur oleh Admin
+};
+
+// Fungsi untuk membuat menu dengan ikon
+function createMenu(role) {
+    const menuItems = roles[role];
+    const menuList = document.getElementById("menuItems");
+    menuList.innerHTML = "";
+
+    menuItems.forEach((menu) => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("nav-item");
+
+        listItem.innerHTML = `
+            <a class="nav-link d-flex align-items-center" href="#" onclick="loadContent('${menu.name}')">
+                <i class="fa ${menu.icon} me-2"></i> <span>${menu.name}</span>
+            </a>
+        `;
+
+        menuList.appendChild(listItem);
+    });
+}
+
+
 // Simulasi Role User Aktif
 const currentUserRole = localStorage.getItem("userRole") || "Admin"; // Ganti sesuai login
 localStorage.setItem("userRole", currentUserRole); // Simpan peran aktif
