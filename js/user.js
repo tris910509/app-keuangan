@@ -1,97 +1,103 @@
-// Inisialisasi Data User
-let users = JSON.parse(localStorage.getItem('users')) || [];
-let editIndex = null;
+let users = JSON.parse(localStorage.getItem("users")) || [];
 
-// Menangani perubahan dropdown peran
-function handleRoleChange() {
-    const role = document.getElementById('userRole').value;
-    const customRoleField = document.getElementById('customRoleField');
-    if (role === 'Other') {
-        customRoleField.style.display = 'block';
-    } else {
-        customRoleField.style.display = 'none';
-    }
-}
-
-// Menampilkan daftar user
-function displayUsers() {
-    const userTable = document.getElementById('userTable');
-    userTable.innerHTML = '';
-
-    users.forEach((user, index) => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
+// Menampilkan daftar user ke tabel
+function renderUserTable() {
+    const userTable = document.getElementById("userTable");
+    userTable.innerHTML = users
+        .map(
+            (user, index) => `
+        <tr>
             <td>${user.id}</td>
             <td>${user.name}</td>
             <td>${user.role}</td>
             <td>${user.phone}</td>
             <td>${user.email}</td>
             <td>${user.address}</td>
-            <td>${user.status ? 'Aktif' : 'Non-Aktif'}</td>
+            <td>${user.status ? "Aktif" : "Tidak Aktif"}</td>
             <td>
-                <button class="btn btn-warning btn-sm" onclick="editUser(${index})">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">Hapus</button>
+                <button class="btn btn-warning btn-sm" onclick="editUser(${index})">
+                    <i class="fa fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">
+                    <i class="fa fa-trash"></i> Hapus
+                </button>
             </td>
-        `;
-
-        userTable.appendChild(row);
-    });
+        </tr>`
+        )
+        .join("");
 }
 
-// Menangani submit formulir
-document.getElementById('userForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+// Tambah/Edit User
+document.getElementById("userForm").addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    const id = editIndex !== null ? users[editIndex].id : new Date().getTime();
-    const name = document.getElementById('userName').value;
-    const role = document.getElementById('userRole').value === 'Other' 
-        ? document.getElementById('customRole').value 
-        : document.getElementById('userRole').value;
-    const phone = document.getElementById('userPhone').value;
-    const email = document.getElementById('userEmail').value;
-    const address = document.getElementById('userAddress').value;
-    const status = document.getElementById('userStatus').checked;
+    const userId = document.getElementById("userId").value;
+    const userName = document.getElementById("userName").value;
+    const userRole = document.getElementById("userRole").value;
+    const userPhone = document.getElementById("userPhone").value;
+    const userEmail = document.getElementById("userEmail").value;
+    const userAddress = document.getElementById("userAddress").value;
+    const userStatus = document.getElementById("userStatus").checked;
+    const manualRole = document.getElementById("manualRole").value;
 
-    const userData = { id, name, role, phone, email, address, status };
+    const user = {
+        id: userId || `USER-${Date.now()}`,
+        name: userName,
+        role: userRole === "Other" ? manualRole : userRole,
+        phone: userPhone,
+        email: userEmail,
+        address: userAddress,
+        status: userStatus,
+    };
 
-    if (editIndex !== null) {
-        users[editIndex] = userData;
-        editIndex = null;
+    if (userId) {
+        // Update user
+        const index = users.findIndex((u) => u.id === userId);
+        users[index] = user;
     } else {
-        users.push(userData);
+        // Tambah user baru
+        users.push(user);
     }
 
-    localStorage.setItem('users', JSON.stringify(users));
-    this.reset();
-    document.getElementById('customRoleField').style.display = 'none';
-    displayUsers();
+    localStorage.setItem("users", JSON.stringify(users));
+    document.getElementById("userForm").reset();
+    document.getElementById("manualRole").style.display = "none";
+    renderUserTable();
 });
 
-// Mengedit user
+// Edit User
 function editUser(index) {
-    editIndex = index;
     const user = users[index];
+    document.getElementById("userId").value = user.id;
+    document.getElementById("userName").value = user.name;
+    document.getElementById("userRole").value = user.role === "Admin" || user.role === "Kasir" ? user.role : "Other";
+    document.getElementById("userPhone").value = user.phone;
+    document.getElementById("userEmail").value = user.email;
+    document.getElementById("userAddress").value = user.address;
+    document.getElementById("userStatus").checked = user.status;
 
-    document.getElementById('userName').value = user.name;
-    document.getElementById('userRole').value = user.role === 'Admin' || user.role === 'Kasir' ? user.role : 'Other';
-    document.getElementById('customRole').value = user.role === 'Admin' || user.role === 'Kasir' ? '' : user.role;
-    document.getElementById('userPhone').value = user.phone;
-    document.getElementById('userEmail').value = user.email;
-    document.getElementById('userAddress').value = user.address;
-    document.getElementById('userStatus').checked = user.status;
-
-    handleRoleChange();
-}
-
-// Menghapus user
-function deleteUser(index) {
-    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-        users.splice(index, 1);
-        localStorage.setItem('users', JSON.stringify(users));
-        displayUsers();
+    if (user.role !== "Admin" && user.role !== "Kasir") {
+        document.getElementById("manualRole").style.display = "block";
+        document.getElementById("manualRole").value = user.role;
+    } else {
+        document.getElementById("manualRole").style.display = "none";
     }
 }
 
-// Menampilkan data user saat halaman dimuat
-document.addEventListener('DOMContentLoaded', displayUsers);
+// Hapus User
+function deleteUser(index) {
+    if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        renderUserTable();
+    }
+}
+
+// Tampilkan input manual untuk role Other
+document.getElementById("userRole").addEventListener("change", (e) => {
+    const manualRoleInput = document.getElementById("manualRole");
+    manualRoleInput.style.display = e.target.value === "Other" ? "block" : "none";
+});
+
+// Inisialisasi
+document.addEventListener("DOMContentLoaded", renderUserTable);
