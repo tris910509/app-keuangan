@@ -21,6 +21,14 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" required>
         </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Peran</label>
+            <select class="form-select" id="role" required>
+                <option value="Admin">Admin</option>
+                <option value="Kasir">Kasir</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
 </div>
@@ -29,14 +37,14 @@
 <div id="dashboardPage" class="container mt-5" style="display: none;">
     <h2 class="text-center">Dashboard</h2>
     <div class="d-flex justify-content-between mb-4">
-        <button class="btn btn-secondary" onclick="showPage('userPage')">User</button>
-        <button class="btn btn-secondary" onclick="showPage('pelangganPage')">Pelanggan</button>
-        <button class="btn btn-secondary" onclick="showPage('supplierPage')">Supplier</button>
-        <button class="btn btn-secondary" onclick="showPage('kategoriPage')">Kategori</button>
-        <button class="btn btn-secondary" onclick="showPage('itemPage')">Item</button>
-        <button class="btn btn-secondary" onclick="showPage('produkPage')">Produk</button>
-        <button class="btn btn-secondary" onclick="showPage('transaksiPage')">Transaksi</button>
-        <button class="btn btn-secondary" onclick="showPage('laporanPage')">Laporan</button>
+        <button class="btn btn-secondary" id="btnUser" style="display: none;" onclick="showPage('userPage')">User</button>
+        <button class="btn btn-secondary" id="btnPelanggan" style="display: none;" onclick="showPage('pelangganPage')">Pelanggan</button>
+        <button class="btn btn-secondary" id="btnSupplier" style="display: none;" onclick="showPage('supplierPage')">Supplier</button>
+        <button class="btn btn-secondary" id="btnKategori" style="display: none;" onclick="showPage('kategoriPage')">Kategori</button>
+        <button class="btn btn-secondary" id="btnItem" style="display: none;" onclick="showPage('itemPage')">Item</button>
+        <button class="btn btn-secondary" id="btnProduk" style="display: none;" onclick="showPage('produkPage')">Produk</button>
+        <button class="btn btn-secondary" id="btnTransaksi" onclick="showPage('transaksiPage')">Transaksi</button>
+        <button class="btn btn-secondary" id="btnLaporan" onclick="showPage('laporanPage')">Laporan</button>
         <button class="btn btn-danger" onclick="logout()">Logout</button>
     </div>
 
