@@ -3,9 +3,20 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     event.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
 
-    if (username === 'admin' && password === 'admin') {
+    // Login validasi
+    if (username === 'admin' && password === 'admin' && role === 'Admin') {
         localStorage.setItem('loggedIn', true);
+        localStorage.setItem('role', 'Admin');
+        showPage('dashboardPage');
+    } else if (username === 'kasir' && password === 'kasir' && role === 'Kasir') {
+        localStorage.setItem('loggedIn', true);
+        localStorage.setItem('role', 'Kasir');
+        showPage('dashboardPage');
+    } else if (username === 'other' && password === 'other' && role === 'Other') {
+        localStorage.setItem('loggedIn', true);
+        localStorage.setItem('role', 'Other');
         showPage('dashboardPage');
     } else {
         alert('Login gagal! Coba lagi.');
@@ -15,6 +26,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 // Fungsi untuk logout
 function logout() {
     localStorage.removeItem('loggedIn');
+    localStorage.removeItem('role');
     showPage('loginPage');
 }
 
@@ -24,6 +36,24 @@ function showPage(pageId) {
         page.style.display = 'none';
     });
     document.getElementById(pageId).style.display = 'block';
+
+    // Menampilkan tombol sesuai peran
+    const role = localStorage.getItem('role');
+
+    if (role === 'Admin') {
+        document.getElementById('btnUser').style.display = 'inline-block';
+        document.getElementById('btnPelanggan').style.display = 'inline-block';
+        document.getElementById('btnSupplier').style.display = 'inline-block';
+        document.getElementById('btnKategori').style.display = 'inline-block';
+        document.getElementById('btnItem').style.display = 'inline-block';
+        document.getElementById('btnProduk').style.display = 'inline-block';
+    } else if (role === 'Kasir') {
+        document.getElementById('btnTransaksi').style.display = 'inline-block';
+        document.getElementById('btnLaporan').style.display = 'inline-block';
+    } else if (role === 'Other') {
+        // Admin bisa mengatur fitur yang tersedia untuk peran "Other"
+        alert('Peran Other disesuaikan oleh Admin.');
+    }
 }
 
 // Memeriksa status login
