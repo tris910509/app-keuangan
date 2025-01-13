@@ -1,0 +1,64 @@
+<div class="container mt-3">
+    <h2><i class="fa fa-users"></i> Manajemen User</h2>
+
+    <!-- Form Tambah/Edit User -->
+    <form id="userForm">
+        <input type="hidden" id="userId">
+        <div class="mb-3">
+            <label for="userName" class="form-label">Nama User</label>
+            <input type="text" class="form-control" id="userName" placeholder="Masukkan nama user" required>
+        </div>
+        <div class="mb-3">
+            <label for="userRole" class="form-label">Peran</label>
+            <select class="form-control" id="userRole" required>
+                <option value="" disabled selected>Pilih peran</option>
+                <option value="Admin">Admin</option>
+                <option value="Kasir">Kasir</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div id="otherRoleInput" class="mb-3" style="display: none;">
+            <label for="manualRole" class="form-label">Input Manual untuk Other</label>
+            <input type="text" class="form-control" id="manualRole" placeholder="Masukkan deskripsi peran">
+        </div>
+        <div class="mb-3">
+            <label for="userPhone" class="form-label">No Handphone</label>
+            <input type="text" class="form-control" id="userPhone" placeholder="Masukkan no handphone" required>
+        </div>
+        <div class="mb-3">
+            <label for="userEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="Masukkan email" required>
+        </div>
+        <div class="mb-3">
+            <label for="userAddress" class="form-label">Alamat</label>
+            <textarea class="form-control" id="userAddress" placeholder="Masukkan alamat" rows="2" required></textarea>
+        </div>
+        <div class="mb-3 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="userStatus">
+            <label class="form-check-label" for="userStatus">Aktif</label>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-save"></i> Simpan
+        </button>
+    </form>
+
+    <hr>
+
+    <!-- Daftar User -->
+    <h3><i class="fa fa-list"></i> Daftar User</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Peran</th>
+                <th>No Handphone</th>
+                <th>Email</th>
+                <th>Alamat</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+    </table>
+</div>
