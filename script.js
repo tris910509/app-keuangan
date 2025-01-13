@@ -1,147 +1,173 @@
-// Halaman login
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
+document.addEventListener("DOMContentLoaded", function () {
+    const app = document.getElementById("app");
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Login validasi
-    if (username === 'admin' && password === 'admin' && role === 'Admin') {
-        localStorage.setItem('loggedIn', true);
-        localStorage.setItem('role', 'Admin');
-        showPage('dashboardPage');
-    } else if (username === 'kasir' && password === 'kasir' && role === 'Kasir') {
-        localStorage.setItem('loggedIn', true);
-        localStorage.setItem('role', 'Kasir');
-        showPage('dashboardPage');
-    } else if (username === 'other' && password === 'other' && role === 'Other') {
-        localStorage.setItem('loggedIn', true);
-        localStorage.setItem('role', 'Other');
-        showPage('dashboardPage');
-    } else {
-        alert('Login gagal! Coba lagi.');
-    }
-});
+    function renderUserPage() {
+        app.innerHTML = `
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Manajemen User</h3>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Tambah User</button>
+                </div>
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Peran</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        ${users
+                            .map(
+                                (user) => `
+                                <tr>
+                                    <td>${user.id}</td>
+                                    <td>${user.name}</td>
+                                    <td>${user.role}</td>
+                                    <td>${user.email}</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input 
+                                                class="form-check-input toggle-status" 
+                                                type="checkbox" 
+                                                data-id="${user.id}" 
+                                                ${user.active ? "checked" : ""}
+                                            >
+                                            <label class="form-check-label">
+                                                ${user.active ? "Aktif" : "Nonaktif"}
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm edit-user" data-id="${user.id}">Edit</button>
+                                        <button class="btn btn-danger btn-sm delete-user" data-id="${user.id}">Hapus</button>
+                                    </td>
+                                </tr>
+                            `
+                            )
+                            .join("")}
+                    </tbody>
+                </table>
+            </div>
 
-// Fungsi untuk logout
-function logout() {
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('role');
-    showPage('loginPage');
-}
-
-// Fungsi untuk menampilkan halaman
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.style.display = 'none';
-    });
-    document.getElementById(pageId).style.display = 'block';
-
-    // Menampilkan tombol sesuai peran
-    const role = localStorage.getItem('role');
-
-    if (role === 'Admin') {
-        document.getElementById('btnUser').style.display = 'inline-block';
-        document.getElementById('btnPelanggan').style.display = 'inline-block';
-        document.getElementById('btnSupplier').style.display = 'inline-block';
-        document.getElementById('btnKategori').style.display = 'inline-block';
-        document.getElementById('btnItem').style.display = 'inline-block';
-        document.getElementById('btnProduk').style.display = 'inline-block';
-        document.getElementById('btnTransaksi').style.display = 'inline-block';
-        document.getElementById('btnLaporan').style.display = 'inline-block';
-    } else if (role === 'Kasir') {
-        document.getElementById('btnTransaksi').style.display = 'inline-block';
-        document.getElementById('btnLaporan').style.display = 'inline-block';
-    } else if (role === 'Other') {
-        alert('Peran Other disesuaikan oleh Admin.');
-    }
-}
-
-// Memeriksa status login
-document.addEventListener('DOMContentLoaded', function() {
-    if (localStorage.getItem('loggedIn')) {
-        showPage('dashboardPage');
-    } else {
-        showPage('loginPage');
-    }
-});
-
-// Fungsi untuk menambah data
-function addData(page) {
-    const data = prompt(`Masukkan data untuk ${page}:`);
-    if (data) {
-        const id = new Date().getTime();  // ID unik menggunakan waktu
-        let storedData = JSON.parse(localStorage.getItem(page)) || [];
-        storedData.push({ id, data });
-        localStorage.setItem(page, JSON.stringify(storedData));
-        loadData(page);
-    }
-}
-
-// Fungsi untuk memuat data
-function loadData(page) {
-    const table = document.getElementById(`${page}Table`);
-    let storedData = JSON.parse(localStorage.getItem(page)) || [];
-    
-    let tableHTML = `
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Data</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-    `;
-    
-    storedData.forEach(item => {
-        tableHTML += `
-            <tr>
-                <td>${item.id}</td>
-                <td>${item.data}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editData('${page}', ${item.id})">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteData('${page}', ${item.id})">Hapus</button>
-                </td>
-            </tr>
+            <!-- Modal Tambah/Edit User -->
+            <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addUserModalLabel">Tambah User</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="userForm">
+                                <input type="hidden" id="userId">
+                                <div class="mb-3">
+                                    <label for="userName" class="form-label">Nama User</label>
+                                    <input type="text" class="form-control" id="userName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="userRole" class="form-label">Peran</label>
+                                    <select class="form-select" id="userRole" required>
+                                        <option value="SupAdm">SupAdm</option>
+                                        <option value="Kasir">Kasir</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="userEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="userEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="userPassword" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="userPassword" required>
+                                </div>
+                                <div class="mb-3" id="manualData" style="display: none;">
+                                    <label for="otherData" class="form-label">Data Tambahan</label>
+                                    <textarea class="form-control" id="otherData" placeholder="Masukkan data tambahan..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Simpan</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
-    });
 
-    tableHTML += `</tbody>`;
-    table.innerHTML = tableHTML;
-}
+        const toggleStatus = document.querySelectorAll(".toggle-status");
+        toggleStatus.forEach((toggle) =>
+            toggle.addEventListener("change", (e) => {
+                const id = e.target.dataset.id;
+                const user = users.find((u) => u.id === id);
+                user.active = e.target.checked;
+                saveUsers();
+                renderUserPage();
+            })
+        );
 
-// Fungsi untuk mengedit data
-function editData(page, id) {
-    const storedData = JSON.parse(localStorage.getItem(page)) || [];
-    const item = storedData.find(data => data.id === id);
-    const newData = prompt(`Edit data:`, item.data);
+        document.querySelectorAll(".edit-user").forEach((btn) =>
+            btn.addEventListener("click", (e) => {
+                const id = e.target.dataset.id;
+                const user = users.find((u) => u.id === id);
+                document.getElementById("userId").value = user.id;
+                document.getElementById("userName").value = user.name;
+                document.getElementById("userRole").value = user.role;
+                document.getElementById("userEmail").value = user.email;
+                document.getElementById("userPassword").value = "";
+                document.getElementById("otherData").value = user.otherData || "";
+                document.getElementById("manualData").style.display = user.role === "Other" ? "block" : "none";
+                const modal = new bootstrap.Modal(document.getElementById("addUserModal"));
+                modal.show();
+            })
+        );
 
-    if (newData) {
-        item.data = newData;
-        localStorage.setItem(page, JSON.stringify(storedData));
-        loadData(page);
+        document.querySelectorAll(".delete-user").forEach((btn) =>
+            btn.addEventListener("click", (e) => {
+                const id = e.target.dataset.id;
+                const index = users.findIndex((u) => u.id === id);
+                if (index !== -1) {
+                    users.splice(index, 1);
+                    saveUsers();
+                    renderUserPage();
+                }
+            })
+        );
+
+        document.getElementById("userRole").addEventListener("change", (e) => {
+            document.getElementById("manualData").style.display = e.target.value === "Other" ? "block" : "none";
+        });
+
+        document.getElementById("userForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const id = document.getElementById("userId").value || Date.now().toString();
+            const name = document.getElementById("userName").value;
+            const role = document.getElementById("userRole").value;
+            const email = document.getElementById("userEmail").value;
+            const password = CryptoJS.MD5(document.getElementById("userPassword").value).toString();
+            const otherData = document.getElementById("otherData").value;
+            const active = true;
+
+            const userIndex = users.findIndex((u) => u.id === id);
+
+            if (userIndex !== -1) {
+                users[userIndex] = { id, name, role, email, password, otherData, active };
+            } else {
+                users.push({ id, name, role, email, password, otherData, active });
+            }
+
+            saveUsers();
+            const modal = bootstrap.Modal.getInstance(document.getElementById("addUserModal"));
+            modal.hide();
+            renderUserPage();
+        });
     }
-}
 
-// Fungsi untuk menghapus data
-function deleteData(page, id) {
-    const storedData = JSON.parse(localStorage.getItem(page)) || [];
-    const filteredData = storedData.filter(data => data.id !== id);
-    localStorage.setItem(page, JSON.stringify(filteredData));
-    loadData(page);
-}
+    function saveUsers() {
+        localStorage.setItem("users", JSON.stringify(users));
+    }
 
-// Fungsi untuk menghasilkan laporan (dummy)
-function generateReport() {
-    alert('Laporan berhasil dibuat!');
-    const table = document.getElementById('laporanTable');
-    table.innerHTML = `<tr><td>Laporan 1</td><td>Detail</td></tr>`;
-}
-
-// Memuat data awal ketika halaman dashboard dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    ['user', 'pelanggan', 'supplier', 'kategori', 'item', 'produk', 'transaksi'].forEach(page => {
-        loadData(page);
-    });
+    renderUserPage();
 });
