@@ -1,141 +1,86 @@
-// Simulasi login
-let currentUser = JSON.parse(localStorage.getItem("currentUser")) || {
-    role: "Admin",
+// Data Dummy untuk Profil
+const profileData = {
+    name: "Admin",
+    email: "admin@example.com",
+    phone: "+62 812 3456 7890",
+    address: "Jalan Raya No. 123, Jakarta",
+    totalPelanggan: 150,
+    totalTransaksi: 75,
+    totalLaporan: 25,
 };
 
-const allowedModules = {
-    Admin: [
-        "user",
-        "pelanggan",
-        "supplier",
-        "kategori",
-        "item",
-        "produk",
-        "transaksi",
-        "laporan",
-    ],
-    Kasir: ["transaksi", "laporan"],
-    Other: [],
-};
+// Fungsi Menyesuaikan Menu Sidebar Berdasarkan Peran
+function loadMenu(role) {
+    const menuContainer = document.getElementById("menuContainer");
+    let menuHTML = "";
 
-// Mengatur menu berdasarkan peran
-function updateMenu() {
-    document.querySelectorAll(".menu-item").forEach((menu) => {
-        const module = menu.id.replace("menu-", "");
-        if (allowedModules[currentUser.role].includes(module)) {
-            menu.style.display = "block";
-        } else {
-            menu.style.display = "none";
-        }
-    });
+    if (role === "Admin") {
+        menuHTML = `
+            <a href="#" class="active"><i class="fa fa-users"></i> User</a>
+            <a href="#"><i class="fa fa-user"></i> Pelanggan</a>
+            <a href="#"><i class="fa fa-truck"></i> Supplier</a>
+            <a href="#"><i class="fa fa-list"></i> Kategori</a>
+            <a href="#"><i class="fa fa-box"></i> Item</a>
+            <a href="#"><i class="fa fa-cube"></i> Produk</a>
+            <a href="#"><i class="fa fa-shopping-cart"></i> Transaksi</a>
+            <a href="#"><i class="fa fa-file"></i> Laporan</a>
+            <a href="#"><i class="fa fa-cogs"></i> Setting</a>
+        `;
+    } else if (role === "Kasir") {
+        menuHTML = `
+            <a href="#" class="active"><i class="fa fa-shopping-cart"></i> Transaksi</a>
+            <a href="#"><i class="fa fa-file"></i> Laporan</a>
+        `;
+    } else if (role === "Other") {
+        menuHTML = `
+            <a href="#" class="active"><i class="fa fa-user"></i> Pelanggan</a>
+            <a href="#"><i class="fa fa-cube"></i> Produk</a>
+        `;
+    }
+
+    menuContainer.innerHTML = menuHTML;
 }
 
-// Muat konten modul
-function loadModule(moduleName) {
-    fetch(`modules/${moduleName}.html`)
-        .then((response) => response.text())
-        .then((html) => {
-            document.getElementById("main-content").innerHTML = html;
-            const script = document.createElement("script");
-            script.src = `js/${moduleName}.js`;
-            document.body.appendChild(script);
-        })
-        .catch((error) => console.error("Error loading module:", error));
+// Fungsi Inisialisasi Profil
+function loadProfile() {
+    document.getElementById("profileName").innerText = profileData.name;
+    document.getElementById("profileEmail").innerText = profileData.email;
+    document.getElementById("profilePhone").innerText = profileData.phone;
+    document.getElementById("profileAddress").innerText = profileData.address;
+    document.getElementById("totalPelanggan").innerText = profileData.totalPelanggan;
+    document.getElementById("totalTransaksi").innerText = profileData.totalTransaksi;
+    document.getElementById("totalLaporan").innerText = profileData.totalLaporan;
 }
 
-// Logout
-document.getElementById("logout").addEventListener("click", () => {
-    alert("Logout berhasil.");
-    localStorage.removeItem("currentUser");
-    window.location.reload();
-});
-
-// Event listener untuk menu
-document.querySelectorAll(".menu-item").forEach((menu) => {
-    menu.addEventListener("click", (e) => {
-        e.preventDefault();
-        const module = menu.id.replace("menu-", "");
-        loadModule(module);
-    });
-});
-
-// Inisialisasi
-document.addEventListener("DOMContentLoaded", () => {
-    updateMenu();
-    loadModule("user"); // Default load
-});
-
-// Simulasi data (sesuai LocalStorage)
-const user = {
-    id: "USER-12345",
-    name: "John Doe",
-    phone: "081234567890",
-    email: "johndoe@example.com",
-    address: "Jl. Contoh Alamat No.123",
-};
-
-const customers = [
-    { id: "CUST-1", name: "Alice" },
-    { id: "CUST-2", name: "Bob" },
-];
-
-const transactions = [
-    { id: "TRANS-1", total: 100000 },
-    { id: "TRANS-2", total: 200000 },
-];
-
-const reports = [
-    { id: "REPORT-1", detail: "Laporan Harian" },
-    { id: "REPORT-2", detail: "Laporan Mingguan" },
-];
-
-// Fungsi menampilkan data profil user
-function displayProfile() {
-    document.getElementById("profileName").innerText = user.name;
-    document.getElementById("profilePhone").innerText = user.phone;
-    document.getElementById("profileEmail").innerText = user.email;
-    document.getElementById("profileAddress").innerText = user.address;
-}
-
-// Fungsi menampilkan ringkasan data
-function displaySummary() {
-    document.getElementById("totalCustomers").innerText = customers.length;
-    document.getElementById("totalTransactions").innerText = transactions.length;
-    document.getElementById("totalReports").innerText = reports.length;
-}
-
-// Fungsi menampilkan chart
-function displayChart() {
-    const ctx = document.getElementById("dataChart").getContext("2d");
+// Fungsi Inisialisasi Chart
+function loadChart() {
+    const ctx = document.getElementById("dashboardChart").getContext("2d");
     new Chart(ctx, {
         type: "bar",
         data: {
             labels: ["Pelanggan", "Transaksi", "Laporan"],
             datasets: [
                 {
-                    label: "Jumlah Data",
-                    data: [customers.length, transactions.length, reports.length],
+                    label: "Statistik",
+                    data: [
+                        profileData.totalPelanggan,
+                        profileData.totalTransaksi,
+                        profileData.totalLaporan,
+                    ],
                     backgroundColor: ["#007bff", "#28a745", "#ffc107"],
                 },
             ],
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "top",
-                },
-            },
-        },
     });
 }
 
-// Inisialisasi data dashboard
-document.addEventListener("DOMContentLoaded", () => {
-    displayProfile();
-    displaySummary();
-    displayChart();
-});
+// Fungsi Inisialisasi Dashboard
+function initializeDashboard() {
+    const role = localStorage.getItem("userRole") || "Admin"; // Default Admin jika tidak ada role tersimpan
+    loadMenu(role);
+    loadProfile();
+    loadChart();
+}
 
-
+// Inisialisasi saat halaman dimuat
+document.addEventListener("DOMContentLoaded", initializeDashboard);
